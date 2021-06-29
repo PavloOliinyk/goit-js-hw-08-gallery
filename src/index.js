@@ -4,6 +4,7 @@ const refs = {
   galery: document.querySelector('.js-gallery'),
   modalCloseBtn: document.querySelector('[data-action="close-lightbox"]'),
   modal: document.querySelector('.js-lightbox'),
+  modalImage: document.querySelector('.lightbox__image'),
 };
 
 const images = galleryItems.reduce(
@@ -27,16 +28,30 @@ const images = galleryItems.reduce(
 );
 
 refs.galery.insertAdjacentHTML('afterbegin', images);
-refs.galery.addEventListener('click', onModalOpen);
+refs.galery.addEventListener('click', (event) => {
+  event.preventDefault();
+  const target = event.target;
+
+  if (event.target.nodeName !== 'IMG') {
+    return;
+  }
+
+  onModalOpen(target);
+});
 refs.modalCloseBtn.addEventListener('click', onModalClose);
 
 function onModalClose() {
   refs.modal.classList.remove('is-open');
+  refs.modalImage.src = '';
 }
-function onModalOpen(event) {
-  event.preventDefault();
+
+function onModalOpen(target) {
   refs.modal.classList.add('is-open');
-  const target = event.target;
-  console.log('event target: ', target);
-  console.log('target.nodeName: ', target.nodeName);
+  console.log(target.src);
+
+  galleryItems.filter(({ preview, original }) => {
+    if (target.src === preview) {
+      refs.modalImage.src = original;
+    }
+  });
 }
