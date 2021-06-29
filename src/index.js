@@ -1,7 +1,7 @@
 import galleryItems from './app.js';
 
 const refs = {
-  galerry: document.querySelector('.js-gallery'),
+  galery: document.querySelector('.js-gallery'),
   modalCloseBtn: document.querySelector('[data-action="close-lightbox"]'),
   modal: document.querySelector('.js-lightbox'),
 };
@@ -26,14 +26,17 @@ const images = galleryItems.reduce(
   '',
 );
 
-refs.galerry.insertAdjacentHTML('afterbegin', images);
+refs.galery.insertAdjacentHTML('afterbegin', images);
+refs.galery.addEventListener('click', onModalOpen);
 refs.modalCloseBtn.addEventListener('click', onModalClose);
 
 function onModalClose() {
   refs.modal.classList.remove('is-open');
 }
-function onModalOpen() {
+function onModalOpen(event) {
+  event.preventDefault();
   refs.modal.classList.add('is-open');
-
-  refs.modalImage.src = `${galleryItems[0].preview}`;
+  const target = event.target;
+  console.log('event target: ', target);
+  console.log('target.nodeName: ', target.nodeName);
 }
