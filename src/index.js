@@ -38,16 +38,27 @@ refs.galery.addEventListener('click', (event) => {
 
   onModalOpen(target);
 });
-refs.modalCloseBtn.addEventListener('click', onModalClose);
 
 function onModalClose() {
   refs.modal.classList.remove('is-open');
   refs.modalImage.src = '';
+  window.removeEventListener('keydown', onModalPress);
+  refs.modalCloseBtn.removeEventListener('click', onModalClose);
+  refs.modal.removeEventListener('click', onModalClose);
+}
+
+function onModalPress(event) {
+  if (event.key === 'Escape') {
+    onModalClose();
+  }
 }
 
 function onModalOpen(target) {
   refs.modal.classList.add('is-open');
-  console.log(target.src);
+  refs.modal.addEventListener('click', onModalClose);
+  window.addEventListener('keydown', onModalPress);
+
+  refs.modalCloseBtn.addEventListener('click', onModalClose);
 
   galleryItems.filter(({ preview, original }) => {
     if (target.src === preview) {
