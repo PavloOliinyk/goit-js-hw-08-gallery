@@ -40,6 +40,20 @@ refs.galery.addEventListener('click', (event) => {
   onModalOpen(target);
 });
 
+function onModalOpen(target) {
+  refs.modal.classList.add('is-open');
+  refs.overlay.addEventListener('click', onModalClose);
+  window.addEventListener('keydown', onModalPress);
+  refs.modalCloseBtn.addEventListener('click', onModalClose);
+
+  galleryItems.forEach(({ preview, original, description }) => {
+    if (target.src === preview) {
+      refs.modalImage.src = `${original}`;
+      refs.modalImage.alt = `${description}`;
+    }
+  });
+}
+
 function onModalClose() {
   refs.modal.classList.remove('is-open');
   refs.modalImage.src = '';
@@ -60,27 +74,36 @@ function onModalPress(event) {
 
 function onChangeSlide(event) {
   if (event.key === 'ArrowLeft') {
-    console.log('Left');
-    refs.modalImage.src =
-      'https://cdn.pixabay.com/photo/2019/05/17/04/35/lighthouse-4208843_1280.jpg';
+    const newPath = galleryItems.reduce(
+      (acc, { original, description }, index, array) => {
+        if (refs.modalImage.src === original) {
+          return index > 0
+            ? [...acc, array[index - 1].original, description]
+            : [...acc, array[array.length - 1].original, description];
+        }
+        return [...acc];
+      },
+      '',
+    );
+
+    refs.modalImage.src = newPath[0];
+    refs.modalImage.alt = newPath[1];
   }
+
   if (event.key === 'ArrowRight') {
-    refs.modalImage.src =
-      'https://cdn.pixabay.com/photo/2019/05/16/21/10/landscape-4208255_1280.jpg';
+    const newPath = galleryItems.reduce(
+      (acc, { original, description }, index, array) => {
+        if (refs.modalImage.src === original) {
+          return index < array.length - 1
+            ? [...acc, array[index + 1].original, description]
+            : [...acc, array[0].original, description];
+        }
+        return [...acc];
+      },
+      '',
+    );
+
+    refs.modalImage.src = newPath[0];
+    refs.modalImage.alt = newPath[1];
   }
-}
-
-function onModalOpen(target) {
-  refs.modal.classList.add('is-open');
-  refs.overlay.addEventListener('click', onModalClose);
-  window.addEventListener('keydown', onModalPress);
-
-  refs.modalCloseBtn.addEventListener('click', onModalClose);
-
-  galleryItems.forEach(({ preview, original, description }) => {
-    if (target.src === preview) {
-      refs.modalImage.src = `${original}`;
-      refs.modalImage.alt = `${description}`;
-    }
-  });
 }
