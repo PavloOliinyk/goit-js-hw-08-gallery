@@ -74,34 +74,32 @@ function onModalPress(event) {
 
 function onChangeSlide(event) {
   if (event.key === 'ArrowLeft') {
-    const newPath = galleryItems.reduce(
-      (acc, { original, description }, index, array) => {
-        if (refs.modalImage.src === original) {
-          return index > 0
-            ? [...acc, array[index - 1].original, description]
-            : [...acc, array[array.length - 1].original, description];
-        }
-        return [...acc];
-      },
-      '',
-    );
+    const newPath = galleryItems.reduce((acc, { original }, index, array) => {
+      if (refs.modalImage.src === original) {
+        return index > 0
+          ? [...acc, array[index - 1].original, array[index - 1].description]
+          : [
+              ...acc,
+              array[array.length - 1].original,
+              array[array.length - 1].description,
+            ];
+      }
+      return [...acc];
+    }, []);
 
     refs.modalImage.src = newPath[0];
     refs.modalImage.alt = newPath[1];
   }
 
   if (event.key === 'ArrowRight') {
-    const newPath = galleryItems.reduce(
-      (acc, { original, description }, index, array) => {
-        if (refs.modalImage.src === original) {
-          return index < array.length - 1
-            ? [...acc, array[index + 1].original, description]
-            : [...acc, array[0].original, description];
-        }
-        return [...acc];
-      },
-      '',
-    );
+    const newPath = galleryItems.reduce((acc, { original }, index, array) => {
+      if (refs.modalImage.src === original) {
+        return index < array.length - 1
+          ? [...acc, array[index + 1].original, array[index + 1].description]
+          : [...acc, array[0].original, array[0].description];
+      }
+      return [...acc];
+    }, []);
 
     refs.modalImage.src = newPath[0];
     refs.modalImage.alt = newPath[1];
